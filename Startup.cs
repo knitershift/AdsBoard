@@ -37,6 +37,10 @@ namespace AdsBoard
                 opts => opts.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"))
             );
 
+            services.ConfigureApplicationCookie(
+                opts => opts.LoginPath = "/Home/Login"
+            );
+
             services.AddIdentity<AppUser, IdentityRole>(
                         opts => {
                             opts.Password.RequireDigit = false;

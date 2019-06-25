@@ -11,10 +11,12 @@ namespace AdsBoard.Controllers
     public class AdminController : Controller
     {
         private UserManager<AppUser> userManager;
+        private RoleManager<IdentityRole> roleManger;
 
-        public AdminController(UserManager<AppUser> userManager)
+        public AdminController(UserManager<AppUser> userManager, RoleManager<IdentityRole> roleManager)
         {
             this.userManager = userManager;
+            this.roleManger = roleManager;
         }
 
         public IActionResult Index()
@@ -85,6 +87,26 @@ namespace AdsBoard.Controllers
             ViewBag.UserID = user.Id;
 
             return View(model);
+        }
+
+
+        public async Task<IActionResult> Roles()
+        {
+            return View(roleManger.Roles);
+        }
+
+        public async Task<IActionResult> NewRole(string Name)
+        {
+            await roleManger.CreateAsync(new IdentityRole(Name));
+            return RedirectToAction("Roles");
+        }
+
+        public async Task<IActionResult> DeleteRole(string Name)
+        {
+            var role = await roleManger.FindByNameAsync(Name);
+            await roleManger.DeleteAsync(role);
+
+            return RedirectToAction("Roles");
         }
     }
 }
